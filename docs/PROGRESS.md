@@ -99,6 +99,15 @@ clean, issue → PR → CI green → squash-merged.
   testids `journal-error`/`journal-total`/`journal-table`/`journal-row`/`journal-pnl`/`remove-trade`
   (exact text "+$95.00"/"—"/"1 closed / 1 logged"). Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓,
   lint ✓, console clean.
+- **UI Slice 7 (in PR, #28) — FINAL UI SLICE:** alerts restyle (`alerts/page.tsx`) — `.page-header`
+  (dropped back-link), `.list`/`.list-row` + `.row-main`/`.row-meta`/`.row-time`, `.empty` empty
+  state; kept the `alert-type` badge. Preserved heading **Alerts** and testids `alert-list`/
+  `alert-row[data-type]`/`alert-type` (buy/danger)/`alerts-empty`. Gates green: unit 54 ✓, e2e 21 ✓,
+  typecheck ✓, lint ✓, console clean.
+- **UI/UX pass complete:** all 7 UI slices merged (#16–#28). Hand-rolled design system + persistent
+  left sidebar; every page restyled. All 21 e2e + 54 unit kept green throughout; no logic/seam/
+  data-model changes. Known follow-up: sidebar active-link highlight (deferred — needs a
+  middleware-set pathname header, which touches non-UI code).
 
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see
