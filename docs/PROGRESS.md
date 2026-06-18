@@ -9,8 +9,8 @@
 | # | Slice | Status | Issue | PR |
 |---|---|---|---|---|
 | — | Repo + context/planning docs scaffold | ✅ | — | (bootstrap) |
-| 0 | Walking skeleton (Next.js+Prisma+Neon+auth+CI+deploy) | 🟦 in PR | [#1](https://github.com/sauravs/solMemeBot/issues/1) | — |
-| 1 | Manage tracked wallets | ⬜ | [#2](https://github.com/sauravs/solMemeBot/issues/2) | — |
+| 0 | Walking skeleton (Next.js+Prisma+Neon+auth+CI+deploy) | ✅ (deploy pending) | [#1](https://github.com/sauravs/solMemeBot/issues/1) | [#8](https://github.com/sauravs/solMemeBot/pull/8) |
+| 1 | Manage tracked wallets | 🟦 in PR | [#2](https://github.com/sauravs/solMemeBot/issues/2) | — |
 | 2 | Ingest buys → activity feed | ⬜ | [#3](https://github.com/sauravs/solMemeBot/issues/3) | — |
 | 3 | Token safety on signals | ⬜ | [#4](https://github.com/sauravs/solMemeBot/issues/4) | — |
 | 4 | Paper-tracking / hypothetical PnL | ⬜ | [#5](https://github.com/sauravs/solMemeBot/issues/5) | — |
@@ -58,5 +58,13 @@ clean, issue → PR → CI green → squash-merged.
   (redirect, bad creds, sign-in reads DB, 3) with a console-error gate. CI workflow present.
   All green locally: unit ✓ e2e ✓ lint ✓ typecheck ✓ build ✓. Only the Vercel deploy item is
   pending (needs user to connect Vercel + Neon).
-- **Next:** merge Slice 0 PR, then Slice 1 — manage tracked wallets (#2). Per user instruction,
-  pausing after Slice 0 this session.
+- **Slice 0 merged** via PR #8 (CI green, squash-merged).
+- **Slice 1 (in PR):** TrackedWallet aggregate + migration; dependency-free Solana address
+  validation (`lib/solana/address.ts`, base58 decode → 32 bytes); owner-scoped repository
+  (`lib/repos/tracked-wallets.ts`); server actions (add/remove) with invalid + duplicate handling;
+  `/dashboard/wallets` UI (add form, list, remove) linked from the dashboard. Tests: Vitest unit
+  (5 address cases) + Playwright e2e (nav, add→persist-across-reload→remove, invalid rejected,
+  duplicate rejected) with the console-error gate. All green locally: unit (9) ✓ e2e (7) ✓ lint ✓
+  typecheck ✓ build ✓.
+- **Next:** Slice 2 — ingest buys → activity feed (#3). Per user instruction, pausing after
+  Slice 1 this session.

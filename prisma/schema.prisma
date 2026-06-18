@@ -14,7 +14,23 @@ datasource db {
 /// The single owner of the system in v1. Modeled explicitly so ownership can be
 /// threaded through for a future multi-tenant SaaS (see docs/ROADMAP.md).
 model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  createdAt      DateTime        @default(now())
+  trackedWallets TrackedWallet[]
+}
+
+/// A Solana wallet the owner has chosen to follow as candidate "smart money".
+/// Hand-seeded by the user (no auto-discovery in v1). See CONTEXT.md.
+model TrackedWallet {
   id        String   @id @default(cuid())
-  email     String   @unique
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  address   String
+  label     String?
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
+
+  @@unique([ownerId, address])
+  @@index([ownerId])
 }
