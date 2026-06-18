@@ -30,7 +30,36 @@ model TrackedWallet {
   label     String?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
+  signals   Signal[]
 
   @@unique([ownerId, address])
   @@index([ownerId])
+}
+
+/// A Solana SPL token (memecoin), keyed by its mint address. See CONTEXT.md.
+model Token {
+  mint        String   @id
+  symbol      String?
+  name        String?
+  firstSeenAt DateTime @default(now())
+  signals     Signal[]
+}
+
+/// The unit we evaluate: a Tracked Wallet's buy of a Token. Ingestion is
+/// idempotent — the @@unique makes webhook retries safe. See CONTEXT.md.
+model Signal {
+  id             String        @id @default(cuid())
+  walletId       String
+  wallet         TrackedWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  tokenMint      String
+  token          Token         @relation(fields: [tokenMint], references: [mint])
+  txSig          String
+  side           String        @default("buy")
+  signalPriceUsd Decimal?      @db.Decimal(38, 18)
+  observedAt     DateTime
+  createdAt      DateTime      @default(now())
+
+  @@unique([walletId, txSig, tokenMint])
+  @@index([walletId, observedAt])
+  @@index([tokenMint])
 }
