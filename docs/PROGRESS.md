@@ -87,6 +87,11 @@ clean, issue → PR → CI green → squash-merged.
   `signal-row`/`signal-wallet`/`signal-token`/`feed-empty` + `safety-badge[data-verdict]`, and token
   testids `token-mint`/`token-verdict[data-verdict]`/`flag-list`/`safety-flag[data-passed]`/`no-flags`.
   Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, console clean.
+- **UI Slice 5 (in PR, #24):** wallet-performance restyle (`performance/page.tsx`) — `.page-header`
+  (dropped back-link), new reusable `.table` class (uppercase muted headers, row borders), `.empty`
+  empty state; kept `pnl-pos`/`pnl-neg` coloring + `fmtPct`. Preserved heading **Wallet performance**
+  and testids `performance-table`/`performance-row[data-wallet]`/`pnl-1h|24h|7d`/`performance-empty`
+  and the exact PnL text format. Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, console clean.
 
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see

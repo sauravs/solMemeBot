@@ -342,6 +342,31 @@ table td {
   font-variant-numeric: tabular-nums;
 }
 
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0 var(--space-4) var(--space-3) 0;
+}
+
+.table td {
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-top: 1px solid var(--border);
+}
+
+.table th:last-child,
+.table td:last-child {
+  padding-right: 0;
+}
+
 /* ---------- Auth screen ---------- */
 .auth-shell {
   min-height: 100vh;

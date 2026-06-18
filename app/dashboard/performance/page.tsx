@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { listSignalPnlRows } from "@/lib/repos/performance";
@@ -41,52 +40,43 @@ export default async function PerformancePage() {
 
   return (
     <main>
-      <h1>Wallet performance</h1>
-      <p className="muted">
-        Hypothetical &quot;if you&apos;d followed&quot; PnL per tracked wallet.{" "}
-        <Link href="/dashboard">← Dashboard</Link>
-      </p>
+      <div className="page-header">
+        <h1>Wallet performance</h1>
+        <p className="page-subtitle">
+          Hypothetical &quot;if you&apos;d followed&quot; PnL per tracked wallet.
+        </p>
+      </div>
 
       <div className="panel">
         {wallets.length === 0 ? (
-          <p className="muted" data-testid="performance-empty">
+          <p className="empty" data-testid="performance-empty">
             No signals yet. Once tracked wallets buy and prices are snapshotted, PnL appears here.
           </p>
         ) : (
-          <table data-testid="performance-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table data-testid="performance-table" className="table">
             <thead>
-              <tr style={{ textAlign: "left", color: "var(--muted)", fontSize: "0.85rem" }}>
-                <th style={{ padding: "0.5rem 0" }}>Wallet</th>
+              <tr>
+                <th>Wallet</th>
                 {HORIZONS.map((h) => (
-                  <th key={h.key} style={{ padding: "0.5rem 0" }}>{h.key}</th>
+                  <th key={h.key}>{h.key}</th>
                 ))}
-                <th style={{ padding: "0.5rem 0" }}>Signals</th>
+                <th>Signals</th>
               </tr>
             </thead>
             <tbody>
               {wallets.map((w) => (
-                <tr
-                  key={w.id}
-                  data-testid="performance-row"
-                  data-wallet={w.id}
-                  style={{ borderTop: "1px solid var(--border)" }}
-                >
-                  <td style={{ padding: "0.6rem 0" }}>{w.label ?? short(w.address)}</td>
+                <tr key={w.id} data-testid="performance-row" data-wallet={w.id}>
+                  <td>{w.label ?? short(w.address)}</td>
                   {HORIZONS.map((h) => {
                     const v = byHorizon.get(h.key)!.get(w.id);
                     const cls = v === undefined ? "muted" : v >= 0 ? "pnl-pos" : "pnl-neg";
                     return (
-                      <td
-                        key={h.key}
-                        className={cls}
-                        data-testid={`pnl-${h.key}`}
-                        style={{ padding: "0.6rem 0" }}
-                      >
+                      <td key={h.key} className={cls} data-testid={`pnl-${h.key}`}>
                         {fmtPct(v)}
                       </td>
                     );
                   })}
-                  <td className="muted" style={{ padding: "0.6rem 0" }}>{w.count}</td>
+                  <td className="muted">{w.count}</td>
                 </tr>
               ))}
             </tbody>
