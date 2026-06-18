@@ -28,27 +28,35 @@ export default async function LoginPage({
   }
 
   return (
-    <main>
-      <h1>solMemeBot</h1>
-      <p className="muted">Sign in to your private dashboard</p>
-      <form action={authenticate} className="panel">
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" autoComplete="username" required />
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-        />
-        {error ? (
-          <p className="error" data-testid="login-error">
-            Invalid email or password.
-          </p>
-        ) : null}
-        <button type="submit">Sign in</button>
-      </form>
+    <main className="auth-shell">
+      <div className="auth-card">
+        <div className="auth-brand">
+          <h1>solMemeBot</h1>
+          <p className="muted">Sign in to your private dashboard</p>
+        </div>
+        <form action={authenticate} className="panel">
+          <div className="field">
+            <label htmlFor="email">Email</label>
+            <input id="email" name="email" type="email" autoComplete="username" required />
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+          {error ? (
+            <p className="error" data-testid="login-error">
+              Invalid email or password.
+            </p>
+          ) : null}
+          <button type="submit">Sign in</button>
+        </form>
+      </div>
     </main>
   );
 }

@@ -68,6 +68,11 @@ clean, issue → PR → CI green → squash-merged.
     pathname header (touches non-UI code, discuss first).
   - Gates green locally: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, DevTools console clean
     (enforced by the e2e console gate). All `data-testid`/labels/button names preserved.
+- **UI Slice 2 (in PR, #18):** login restyle (`app/login/page.tsx`) — standalone centered auth
+  card (`.auth-shell`/`.auth-card`/`.auth-brand`) using the Slice 1 system: `.field` groups,
+  focus rings, full-width Sign in. Preserved heading **solMemeBot**, labels **Email**/**Password**,
+  button **Sign in**, `data-testid="login-error"`, and the server-action/redirect behavior.
+  Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, console clean.
 
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see
