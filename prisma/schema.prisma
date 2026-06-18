@@ -1,0 +1,20 @@
+// solMemeBot schema. Domain terms come from CONTEXT.md.
+// v1 grows aggregate-by-aggregate as slices land; Slice 0 introduces only User.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// The single owner of the system in v1. Modeled explicitly so ownership can be
+/// threaded through for a future multi-tenant SaaS (see docs/ROADMAP.md).
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
