@@ -50,6 +50,25 @@ clean, issue → PR → CI green → squash-merged.
 
 ## Log
 
+### 2026-06-18 — UI/UX presentation pass (post Phase 0)
+- Presentation-only redesign begun (no logic/data-model/seam changes). Decisions locked with owner:
+  **hand-rolled CSS** (extend `globals.css`, no Tailwind/component-kit, zero new deps) and a
+  **persistent left sidebar**. Slice plan: 1) shell + tokens + components; then one slice per page.
+- **UI Slice 1 (in PR, #16):** Design tokens + reusable component classes in `app/globals.css`
+  (spacing/radius/typography vars, `.btn`/`.btn-ghost`/`.btn-danger`, `.card`/`.card-grid`,
+  `.field`, `.empty`, app-shell/sidebar; kept `.panel`/`.badge`/`.pnl-*`/`.error`/`.muted`).
+  New `app/dashboard/layout.tsx` renders the sidebar chrome (brand, section nav carrying the
+  `nav-*` testids, sign-out); the hub page (`/dashboard`) is now an overview (header + account
+  panel + section cards) with the nav list + sign-out moved into the sidebar.
+  - **Gotcha (recorded):** a `usePathname` **client** sidebar component tripped the console-error
+    gate — Next 15.1.4 **dev** mode throws `__webpack_require__.n is not a function` on the *first*
+    cold-compile of the app's first client component (independent of which Next module is imported),
+    and CI runs `pnpm dev`. Resolved by making the sidebar a pure **server component** (plain `<a>`
+    links). Tradeoff: no active-link highlighting this slice — revisit later via a middleware-set
+    pathname header (touches non-UI code, discuss first).
+  - Gates green locally: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, DevTools console clean
+    (enforced by the e2e console gate). All `data-testid`/labels/button names preserved.
+
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see
   `docs/PRD.md` table and the ADRs).

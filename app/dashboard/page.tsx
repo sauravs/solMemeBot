@@ -1,7 +1,35 @@
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+
+const SECTIONS = [
+  {
+    href: "/dashboard/wallets",
+    title: "Tracked wallets",
+    desc: "Hand-pick the smart-money wallets to follow.",
+  },
+  {
+    href: "/dashboard/feed",
+    title: "Activity feed",
+    desc: "Buys by your tracked wallets, with safety verdicts.",
+  },
+  {
+    href: "/dashboard/performance",
+    title: "Wallet performance",
+    desc: "Hypothetical PnL if you'd followed each wallet.",
+  },
+  {
+    href: "/dashboard/journal",
+    title: "Trade journal",
+    desc: "Your real trades and net-of-fees realized PnL.",
+  },
+  {
+    href: "/dashboard/alerts",
+    title: "Alerts",
+    desc: "Tracked-wallet buys and safety warnings.",
+  },
+];
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -14,8 +42,10 @@ export default async function DashboardPage() {
 
   return (
     <main>
-      <h1>solMemeBot</h1>
-      <p className="muted">Private analytics dashboard — Phase 0</p>
+      <div className="page-header">
+        <h1>Dashboard</h1>
+        <p className="page-subtitle">Private Solana memecoin analytics — Phase 0</p>
+      </div>
 
       <div className="panel">
         <p data-testid="welcome">Signed in as {user?.email}</p>
@@ -24,36 +54,14 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="panel">
-        <Link href="/dashboard/wallets" data-testid="nav-wallets">
-          Tracked wallets →
-        </Link>
-        <br />
-        <Link href="/dashboard/feed" data-testid="nav-feed">
-          Activity feed →
-        </Link>
-        <br />
-        <Link href="/dashboard/performance" data-testid="nav-performance">
-          Wallet performance →
-        </Link>
-        <br />
-        <Link href="/dashboard/journal" data-testid="nav-journal">
-          Trade journal →
-        </Link>
-        <br />
-        <Link href="/dashboard/alerts" data-testid="nav-alerts">
-          Alerts →
-        </Link>
+      <div className="card-grid">
+        {SECTIONS.map((s) => (
+          <Link key={s.href} href={s.href} className="card">
+            <p className="card-title">{s.title}</p>
+            <p className="card-desc">{s.desc}</p>
+          </Link>
+        ))}
       </div>
-
-      <form
-        action={async () => {
-          "use server";
-          await signOut({ redirectTo: "/login" });
-        }}
-      >
-        <button type="submit">Sign out</button>
-      </form>
     </main>
   );
 }
