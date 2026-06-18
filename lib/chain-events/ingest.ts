@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { ensureSafetyReport } from "@/lib/safety/ensure";
 import { getPriceSource } from "@/lib/price";
+import { getNotifier } from "@/lib/notify";
 import type { ParsedBuy } from "@/lib/chain-events/parse";
 
 /**
@@ -26,7 +27,8 @@ export async function ingestBuys(buys: ParsedBuy[]): Promise<number> {
     });
 
     // Assess the token's safety the first time we see it bought.
-    await ensureSafetyReport(buy.tokenMint);
+    const verdict = await ensureSafetyReport(buy.tokenMint);
+    const notifier = getNotifier();
 
     // Capture the entry price at signal time (CONTEXT.md: a Signal records the
     // token's price when observed). Null-tolerant so ingestion never breaks.
@@ -48,6 +50,18 @@ export async function ingestBuys(buys: ParsedBuy[]): Promise<number> {
           },
         });
         created += 1;
+
+        // A new buy fired — alert the owner (in-app + Telegram).
+        await notifier.notify({
+          ownerId: wallet.ownerId,
+          type: verdict === "danger" ? "safety_danger" : "wallet_buy",
+          payload: {
+            wallet: wallet.label ?? wallet.address,
+            tokenMint: buy.tokenMint,
+            verdict,
+            txSig: buy.txSig,
+          },
+        });
       } catch (e) {
         // Already ingested (webhook retry / replay) — idempotent no-op.
         if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {

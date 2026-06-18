@@ -19,6 +19,22 @@ model User {
   createdAt      DateTime        @default(now())
   trackedWallets TrackedWallet[]
   journalEntries JournalEntry[]
+  alerts         Alert[]
+}
+
+/// A notification emitted for a high-signal event (a tracked-wallet buy, or a
+/// tripped safety flag). Persisted in-app; also pushed to Telegram. See CONTEXT.md.
+model Alert {
+  id      String    @id @default(cuid())
+  ownerId String
+  owner   User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  type    String
+  payload Json
+  channel String    @default("in_app")
+  sentAt  DateTime  @default(now())
+  readAt  DateTime?
+
+  @@index([ownerId, sentAt])
 }
 
 /// A real trade the owner manually logged. Its realized PnL is stored net of

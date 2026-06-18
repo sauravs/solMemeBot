@@ -14,8 +14,8 @@
 | 2 | Ingest buys → activity feed | ✅ | [#3](https://github.com/sauravs/solMemeBot/issues/3) | [#11](https://github.com/sauravs/solMemeBot/pull/11) |
 | 3 | Token safety on signals | ✅ | [#4](https://github.com/sauravs/solMemeBot/issues/4) | [#12](https://github.com/sauravs/solMemeBot/pull/12) |
 | 4 | Paper-tracking / hypothetical PnL | ✅ | [#5](https://github.com/sauravs/solMemeBot/issues/5) | [#13](https://github.com/sauravs/solMemeBot/pull/13) |
-| 5 | Manual trade journal | 🟦 in PR | [#6](https://github.com/sauravs/solMemeBot/issues/6) | — |
-| 6 | Telegram alerts | ⬜ | [#7](https://github.com/sauravs/solMemeBot/issues/7) | — |
+| 5 | Manual trade journal | ✅ | [#6](https://github.com/sauravs/solMemeBot/issues/6) | [#14](https://github.com/sauravs/solMemeBot/pull/14) |
+| 6 | Telegram alerts | 🟦 in PR | [#7](https://github.com/sauravs/solMemeBot/issues/7) | — |
 
 A slice is **done** only when: unit + Playwright green locally and in CI, Chrome DevTools console
 clean, issue → PR → CI green → squash-merged.
@@ -110,4 +110,24 @@ clean, issue → PR → CI green → squash-merged.
   (open shows "—"), and a net-of-fees totals row (closed/logged counts). Tests: Vitest unit
   (realizedPnl, sumRealizedPnl) + Playwright e2e (closed trade PnL+totals, open excluded, multi-trade
   sum, invalid rejected). Green locally: unit (50), e2e (19), lint, typecheck, build.
-- **Next:** Slice 6 — Telegram alerts (#7), the final slice (`Notifier` seam). Pausing after Slice 5.
+- **Slice 5 merged** via PR #14.
+- **Slice 6 (in PR) — FINAL SLICE:** `Notifier` seam. `Alert` aggregate + migration. Three adapters:
+  `inAppNotifier` (persists Alert rows), `telegramNotifier` (pure `buildTelegramText` + no-op when
+  unconfigured), and `compositeNotifier` (fans out, error-contained). Ingestion emits an alert per
+  new signal — `safety_danger` when the token's verdict is danger, else `wallet_buy` — in-app +
+  Telegram. `/dashboard/alerts` lists them. Tests: Vitest unit (composite dispatch incl.
+  one-channel-throws, Telegram text) + Playwright e2e (healthy buy → wallet_buy alert; danger buy →
+  safety_danger alert). Green locally: unit (54), e2e (21), lint, typecheck, build.
+
+## 🎉 Phase 0 feature-complete (pending merge of #7)
+
+All 7 slices done. v1 delivers: single-user auth → manage tracked wallets → ingest their buys
+(Helius) → token safety (RugCheck/fake) → forward price snapshots + per-wallet hypothetical PnL
+(cron) → manual trade journal → in-app + Telegram alerts. Six clean seams (`ChainEvents`,
+`SafetyReporter`, `PriceSource`, `Notifier`, paper-tracking, persistence), each faked in tests.
+
+**Remaining before real use (the only deferred items):** connect Vercel + Neon and set production
+env (`DATABASE_URL`, `AUTH_SECRET`, `APP_USER`/`APP_PASSWORD`, `CRON_SECRET`, `HELIUS_*`,
+`TELEGRAM_*`; leave `SAFETY_PROVIDER`/`PRICE_PROVIDER` unset for the real adapters; do NOT set
+`CRON_TIME_OVERRIDE`); register the Helius webhook → `/api/webhooks/helius`; seed real smart-money
+wallets. Then Phase 1 (wallet-quality score, programmatic execution) per `docs/ROADMAP.md`.
