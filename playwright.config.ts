@@ -6,10 +6,12 @@ const BASE_URL = `http://localhost:${PORT}`;
 export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
-  fullyParallel: true,
+  // Single-user app sharing one database: run specs serially so they don't race
+  // over the same owner's wallets/signals. The suite is small, so this is cheap.
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "list" : "html",
   use: {
     baseURL: BASE_URL,

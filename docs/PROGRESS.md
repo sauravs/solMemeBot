@@ -10,8 +10,8 @@
 |---|---|---|---|---|
 | — | Repo + context/planning docs scaffold | ✅ | — | (bootstrap) |
 | 0 | Walking skeleton (Next.js+Prisma+Neon+auth+CI+deploy) | ✅ (deploy pending) | [#1](https://github.com/sauravs/solMemeBot/issues/1) | [#8](https://github.com/sauravs/solMemeBot/pull/8) |
-| 1 | Manage tracked wallets | 🟦 in PR | [#2](https://github.com/sauravs/solMemeBot/issues/2) | — |
-| 2 | Ingest buys → activity feed | ⬜ | [#3](https://github.com/sauravs/solMemeBot/issues/3) | — |
+| 1 | Manage tracked wallets | ✅ | [#2](https://github.com/sauravs/solMemeBot/issues/2) | [#9](https://github.com/sauravs/solMemeBot/pull/9) |
+| 2 | Ingest buys → activity feed | 🟦 in PR | [#3](https://github.com/sauravs/solMemeBot/issues/3) | — |
 | 3 | Token safety on signals | ⬜ | [#4](https://github.com/sauravs/solMemeBot/issues/4) | — |
 | 4 | Paper-tracking / hypothetical PnL | ⬜ | [#5](https://github.com/sauravs/solMemeBot/issues/5) | — |
 | 5 | Manual trade journal | ⬜ | [#6](https://github.com/sauravs/solMemeBot/issues/6) | — |
@@ -71,5 +71,16 @@ clean, issue → PR → CI green → squash-merged.
   (5 address cases) + Playwright e2e (nav, add→persist-across-reload→remove, invalid rejected,
   duplicate rejected) with the console-error gate. All green locally: unit (9) ✓ e2e (7) ✓ lint ✓
   typecheck ✓ build ✓.
-- **Next:** Slice 2 — ingest buys → activity feed (#3). Per user instruction, pausing after
-  Slice 1 this session.
+- **Slice 1 merged** via PR #9.
+- **Decision recorded (PR #10):** deployment (Vercel + Neon) deferred to the end; not a blocker.
+  Repo stays public (owner-approved).
+- **Slice 2 (in PR):** `ChainEvents` seam. `Token` + `Signal` aggregates (+ migration), idempotent
+  ingestion via `@@unique([walletId, txSig, tokenMint])`. Pure Helius enhanced-webhook parser
+  (`lib/chain-events/parse.ts`, SOL/USDC→memecoin buy detection, sell/quote/malformed handling),
+  ingestion orchestration (`lib/chain-events/ingest.ts`, tracked-wallets only, P2002-safe), signals
+  repo, webhook route (`/api/webhooks/helius`, shared-secret auth), and `/dashboard/feed`. Tests:
+  Vitest unit (6 parser cases) + Playwright e2e (auth 401, tracked buy→feed, untracked ignored,
+  replay idempotent). e2e made serial (`workers: 1`) since the single-user app shares one DB.
+  Green locally: unit (15), e2e (11), lint, typecheck, build.
+- **Next:** Slice 3 — token safety on signals (#4). Pausing after Slice 2 this session per the
+  one-slice-per-session cadence (resume from this file).
