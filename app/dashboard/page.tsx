@@ -1,6 +1,7 @@
 import { auth, signOut } from "@/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -21,6 +22,12 @@ export default async function DashboardPage() {
         <p className="muted" data-testid="member-since">
           Owner since {user?.createdAt.toISOString()}
         </p>
+      </div>
+
+      <div className="panel">
+        <Link href="/dashboard/wallets" data-testid="nav-wallets">
+          Tracked wallets →
+        </Link>
       </div>
 
       <form
