@@ -20,18 +20,20 @@ export default async function TokenPage({
 
   return (
     <main>
-      <h1>Token safety</h1>
-      <p className="muted">
-        <Link href="/dashboard/feed">← Feed</Link>
-      </p>
+      <div className="page-header">
+        <p className="page-subtitle">
+          <Link href="/dashboard/feed">← Activity feed</Link>
+        </p>
+        <h1>Token safety</h1>
+      </div>
 
       <div className="panel">
-        <p className="muted">Mint</p>
+        <p className="muted" style={{ margin: 0 }}>Mint</p>
         <code data-testid="token-mint" style={{ wordBreak: "break-all" }}>
           {mint}
         </code>
-        <p style={{ marginTop: "1rem" }}>
-          Verdict:{" "}
+        <p style={{ marginTop: "var(--space-4)", display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+          <span className="muted">Verdict</span>
           <span className={`badge badge-${verdict}`} data-testid="token-verdict" data-verdict={verdict}>
             {verdict}
           </span>
@@ -39,24 +41,19 @@ export default async function TokenPage({
       </div>
 
       <div className="panel">
-        <h2 style={{ fontSize: "1.1rem", marginTop: 0 }}>Checks</h2>
+        <h2>Checks</h2>
         {flags.length === 0 ? (
-          <p className="muted" data-testid="no-flags">
+          <p className="empty" data-testid="no-flags">
             No safety report yet for this token.
           </p>
         ) : (
-          <ul data-testid="flag-list" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          <ul data-testid="flag-list" className="list">
             {flags.map((f) => (
               <li
                 key={f.code}
                 data-testid="safety-flag"
                 data-passed={f.passed ? "true" : "false"}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "0.5rem 0",
-                  borderBottom: "1px solid var(--border)",
-                }}
+                className="list-row"
               >
                 <span>
                   {f.passed ? "✅" : "🚩"} {f.label}

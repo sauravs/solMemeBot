@@ -280,6 +280,22 @@ button:hover,
   font-size: 0.85rem;
 }
 
+.row-main {
+  min-width: 0;
+}
+
+.row-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.row-time {
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
 /* ---------- Badges ---------- */
 .badge {
   display: inline-block;
