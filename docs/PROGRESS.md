@@ -80,6 +80,13 @@ clean, issue → PR → CI green → squash-merged.
   **Label (optional)**, button **Add wallet**, and testids `wallet-list`/`wallet-row`/`wallet-label`/
   `wallet-address`/`remove-wallet`/`empty-state`/`add-error`. Gates green: unit 54 ✓, e2e 21 ✓,
   typecheck ✓, lint ✓, console clean.
+- **UI Slice 4 (in PR, #22):** feed + token-detail restyle. Feed (`feed/page.tsx`): `.page-header`,
+  `.list-row` rows, `.row-main`/`.row-meta`/`.row-time` helpers, kept `SafetyBadge`, dropped
+  back-link. Token (`token/[mint]/page.tsx`): `.page-header` with contextual "← Activity feed",
+  verdict badge, checks via `.list-row`, `.empty` no-flags. Preserved feed testids `signal-list`/
+  `signal-row`/`signal-wallet`/`signal-token`/`feed-empty` + `safety-badge[data-verdict]`, and token
+  testids `token-mint`/`token-verdict[data-verdict]`/`flag-list`/`safety-flag[data-passed]`/`no-flags`.
+  Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, console clean.
 
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see
