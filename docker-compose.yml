@@ -1,0 +1,23 @@
+# Local development Postgres for solMemeBot.
+# Production uses Neon (see docs/adr/0004); CI uses a Postgres service container.
+# Port 5433 on the host to avoid clashing with other local Postgres instances.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: solmemebot-pg
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: solmemebot
+    ports:
+      - "5433:5432"
+    volumes:
+      - solmemebot-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  solmemebot-pgdata:
