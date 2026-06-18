@@ -296,6 +296,41 @@ table td {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- Auth screen ---------- */
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.auth-brand h1 {
+  font-size: 1.9rem;
+  margin-bottom: var(--space-2);
+}
+
+.auth-card .panel {
+  margin-top: 0;
+}
+
+.auth-card .btn,
+.auth-card button[type="submit"] {
+  width: 100%;
+  margin-top: var(--space-5);
+  text-align: center;
+}
+
 /* ---------- Dashboard shell ---------- */
 .app-shell {
   display: flex;
