@@ -8,13 +8,14 @@ import type { SafetyReporter } from "@/lib/safety";
  * absent. Idempotent (one report per token). The reporter is injectable so this
  * can be driven with a fake in tests. Failures are swallowed so a flaky safety
  * provider never blocks signal ingestion — the report just fills in later.
+ * Returns the token's current verdict, or null if none could be determined.
  */
 export async function ensureSafetyReport(
   tokenMint: string,
   reporter: SafetyReporter = getSafetyReporter(),
-): Promise<void> {
+): Promise<string | null> {
   const existing = await prisma.safetyReport.findUnique({ where: { tokenMint } });
-  if (existing) return;
+  if (existing) return existing.verdict;
 
   try {
     const report = await reporter.getSafetyReport(tokenMint);
@@ -24,7 +25,9 @@ export async function ensureSafetyReport(
       create: { tokenMint, verdict: report.verdict, flags },
       update: { verdict: report.verdict, flags, fetchedAt: new Date() },
     });
+    return report.verdict;
   } catch {
     // Leave it unreported; a later signal or a manual refresh can retry.
+    return null;
   }
 }
