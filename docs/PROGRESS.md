@@ -11,8 +11,8 @@
 | — | Repo + context/planning docs scaffold | ✅ | — | (bootstrap) |
 | 0 | Walking skeleton (Next.js+Prisma+Neon+auth+CI+deploy) | ✅ (deploy pending) | [#1](https://github.com/sauravs/solMemeBot/issues/1) | [#8](https://github.com/sauravs/solMemeBot/pull/8) |
 | 1 | Manage tracked wallets | ✅ | [#2](https://github.com/sauravs/solMemeBot/issues/2) | [#9](https://github.com/sauravs/solMemeBot/pull/9) |
-| 2 | Ingest buys → activity feed | 🟦 in PR | [#3](https://github.com/sauravs/solMemeBot/issues/3) | — |
-| 3 | Token safety on signals | ⬜ | [#4](https://github.com/sauravs/solMemeBot/issues/4) | — |
+| 2 | Ingest buys → activity feed | ✅ | [#3](https://github.com/sauravs/solMemeBot/issues/3) | [#11](https://github.com/sauravs/solMemeBot/pull/11) |
+| 3 | Token safety on signals | 🟦 in PR | [#4](https://github.com/sauravs/solMemeBot/issues/4) | — |
 | 4 | Paper-tracking / hypothetical PnL | ⬜ | [#5](https://github.com/sauravs/solMemeBot/issues/5) | — |
 | 5 | Manual trade journal | ⬜ | [#6](https://github.com/sauravs/solMemeBot/issues/6) | — |
 | 6 | Telegram alerts | ⬜ | [#7](https://github.com/sauravs/solMemeBot/issues/7) | — |
@@ -82,5 +82,15 @@ clean, issue → PR → CI green → squash-merged.
   Vitest unit (6 parser cases) + Playwright e2e (auth 401, tracked buy→feed, untracked ignored,
   replay idempotent). e2e made serial (`workers: 1`) since the single-user app shares one DB.
   Green locally: unit (15), e2e (11), lint, typecheck, build.
-- **Next:** Slice 3 — token safety on signals (#4). Pausing after Slice 2 this session per the
-  one-slice-per-session cadence (resume from this file).
+- **Slice 2 merged** via PR #11 (CI caught a missing `HELIUS_WEBHOOK_SECRET` env — fixed).
+- **Slice 3 (in PR):** `SafetyReporter` seam. `SafetyReport` aggregate (one per token) + migration.
+  Pure `deriveVerdict` (critical-fail → danger, any-fail → caution, else safe). Two adapters behind
+  the seam: deterministic `fake` (checksum-of-mint → flags; used in dev/CI/e2e via
+  `SAFETY_PROVIDER=fake`) and real `rugcheck` (pure `mapRugcheckReport` + graceful-degrade fetch).
+  `ensureSafetyReport` fetches+stores on first sighting during ingestion (failure-swallowing so it
+  never blocks signals). Feed shows a verdict badge; new `/dashboard/token/[mint]` lists each check
+  with pass/🚩. Tests: Vitest unit (verdict 5, rugcheck-map 4, fake 3) + Playwright e2e (feed badge
+  matches fake contract; token page lists all checks and flags risks). Green locally: unit (27),
+  e2e (13), lint, typecheck, build.
+- **Next:** Slice 4 — paper-tracking / hypothetical PnL (#5), first use of the `PriceSource` seam +
+  Vercel Cron. Pausing after Slice 3 this session (resume from this file).

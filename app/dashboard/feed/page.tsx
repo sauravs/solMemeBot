@@ -2,9 +2,19 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { listRecentSignals } from "@/lib/repos/signals";
+import type { Verdict } from "@/lib/safety";
 
 function short(addr: string) {
   return addr.length > 12 ? `${addr.slice(0, 4)}…${addr.slice(-4)}` : addr;
+}
+
+function SafetyBadge({ verdict }: { verdict: Verdict | null }) {
+  const label = verdict ?? "pending";
+  return (
+    <span className={`badge badge-${label}`} data-testid="safety-badge" data-verdict={label}>
+      {label}
+    </span>
+  );
 }
 
 export default async function FeedPage() {
@@ -35,6 +45,7 @@ export default async function FeedPage() {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
+                  alignItems: "center",
                   gap: "1rem",
                   padding: "0.7rem 0",
                   borderBottom: "1px solid var(--border)",
@@ -45,18 +56,24 @@ export default async function FeedPage() {
                     {s.wallet.label ?? short(s.wallet.address)}
                   </strong>{" "}
                   <span className="muted">bought</span>{" "}
-                  <code data-testid="signal-token" style={{ wordBreak: "break-all" }}>
+                  <Link
+                    href={`/dashboard/token/${s.token.mint}`}
+                    data-testid="signal-token"
+                    style={{ wordBreak: "break-all" }}
+                  >
                     {s.token.symbol ?? short(s.token.mint)}
-                  </code>
+                  </Link>
                 </span>
-                <time
-                  className="muted"
-                  data-testid="signal-time"
-                  dateTime={s.observedAt.toISOString()}
-                  style={{ whiteSpace: "nowrap", fontSize: "0.85rem" }}
-                >
-                  {s.observedAt.toISOString().replace("T", " ").slice(0, 16)} UTC
-                </time>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <SafetyBadge verdict={(s.token.safetyReport?.verdict as Verdict) ?? null} />
+                  <time
+                    className="muted"
+                    dateTime={s.observedAt.toISOString()}
+                    style={{ whiteSpace: "nowrap", fontSize: "0.8rem" }}
+                  >
+                    {s.observedAt.toISOString().replace("T", " ").slice(0, 16)} UTC
+                  </time>
+                </span>
               </li>
             ))}
           </ul>

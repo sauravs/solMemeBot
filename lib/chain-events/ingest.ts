@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { ensureSafetyReport } from "@/lib/safety/ensure";
 import type { ParsedBuy } from "@/lib/chain-events/parse";
 
 /**
@@ -22,6 +23,9 @@ export async function ingestBuys(buys: ParsedBuy[]): Promise<number> {
       update: {},
       create: { mint: buy.tokenMint },
     });
+
+    // Assess the token's safety the first time we see it bought.
+    await ensureSafetyReport(buy.tokenMint);
 
     for (const wallet of wallets) {
       try {
