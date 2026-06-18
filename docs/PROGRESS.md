@@ -92,6 +92,13 @@ clean, issue → PR → CI green → squash-merged.
   empty state; kept `pnl-pos`/`pnl-neg` coloring + `fmtPct`. Preserved heading **Wallet performance**
   and testids `performance-table`/`performance-row[data-wallet]`/`pnl-1h|24h|7d`/`performance-empty`
   and the exact PnL text format. Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, console clean.
+- **UI Slice 6 (in PR, #26):** trade-journal restyle (`journal/page.tsx`) — `.page-header`
+  (dropped back-link), `.field` form groups, reusable `.table`, `.btn-danger` Remove, `.empty`
+  empty state; kept `usd()` formatting + `pnl-pos`/`pnl-neg`. Preserved heading **Trade journal**,
+  all five labels (incl. "Exit price (USD) — leave blank if still open"), button **Log trade**, and
+  testids `journal-error`/`journal-total`/`journal-table`/`journal-row`/`journal-pnl`/`remove-trade`
+  (exact text "+$95.00"/"—"/"1 closed / 1 logged"). Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓,
+  lint ✓, console clean.
 
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see
