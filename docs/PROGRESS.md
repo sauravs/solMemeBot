@@ -73,6 +73,13 @@ clean, issue → PR → CI green → squash-merged.
   focus rings, full-width Sign in. Preserved heading **solMemeBot**, labels **Email**/**Password**,
   button **Sign in**, `data-testid="login-error"`, and the server-action/redirect behavior.
   Gates green: unit 54 ✓, e2e 21 ✓, typecheck ✓, lint ✓, console clean.
+- **UI Slice 3 (in PR, #20):** tracked-wallets restyle (`app/dashboard/wallets/page.tsx`) —
+  `.page-header` (dropped the redundant "← Dashboard" link), `.field` form groups, new reusable
+  `.list`/`.list-row` pattern (for later feed/alerts slices), monospace address, `.btn-danger`
+  Remove, `.empty` empty state. Preserved heading **Tracked wallets**, labels **Wallet address**/
+  **Label (optional)**, button **Add wallet**, and testids `wallet-list`/`wallet-row`/`wallet-label`/
+  `wallet-address`/`remove-wallet`/`empty-state`/`add-error`. Gates green: unit 54 ✓, e2e 21 ✓,
+  typecheck ✓, lint ✓, console clean.
 
 ### 2026-06-18
 - Analyzed source conversation; ran `/grilling` to lock the 8 architecture decisions (see
