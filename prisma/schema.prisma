@@ -38,11 +38,23 @@ model TrackedWallet {
 
 /// A Solana SPL token (memecoin), keyed by its mint address. See CONTEXT.md.
 model Token {
-  mint        String   @id
-  symbol      String?
-  name        String?
-  firstSeenAt DateTime @default(now())
-  signals     Signal[]
+  mint         String        @id
+  symbol       String?
+  name         String?
+  firstSeenAt  DateTime      @default(now())
+  signals      Signal[]
+  safetyReport SafetyReport?
+}
+
+/// Risk assessment for a Token: flags + a derived roll-up verdict. One current
+/// report per token (refreshed in place). See CONTEXT.md and ADR-0003.
+model SafetyReport {
+  id        String   @id @default(cuid())
+  tokenMint String   @unique
+  token     Token    @relation(fields: [tokenMint], references: [mint], onDelete: Cascade)
+  verdict   String
+  flags     Json
+  fetchedAt DateTime @default(now())
 }
 
 /// The unit we evaluate: a Tracked Wallet's buy of a Token. Ingestion is
