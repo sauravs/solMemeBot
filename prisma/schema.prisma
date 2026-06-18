@@ -60,18 +60,33 @@ model SafetyReport {
 /// The unit we evaluate: a Tracked Wallet's buy of a Token. Ingestion is
 /// idempotent — the @@unique makes webhook retries safe. See CONTEXT.md.
 model Signal {
-  id             String        @id @default(cuid())
+  id             String          @id @default(cuid())
   walletId       String
-  wallet         TrackedWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  wallet         TrackedWallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
   tokenMint      String
-  token          Token         @relation(fields: [tokenMint], references: [mint])
+  token          Token           @relation(fields: [tokenMint], references: [mint])
   txSig          String
-  side           String        @default("buy")
-  signalPriceUsd Decimal?      @db.Decimal(38, 18)
+  side           String          @default("buy")
+  signalPriceUsd Float?
   observedAt     DateTime
-  createdAt      DateTime      @default(now())
+  createdAt      DateTime        @default(now())
+  snapshots      PriceSnapshot[]
 
   @@unique([walletId, txSig, tokenMint])
   @@index([walletId, observedAt])
   @@index([tokenMint])
+}
+
+/// A price recorded forward from a Signal at a fixed horizon (1h/24h/7d), used
+/// to compute Hypothetical PnL. One snapshot per (signal, horizon). See CONTEXT.md.
+model PriceSnapshot {
+  id         String   @id @default(cuid())
+  signalId   String
+  signal     Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  horizon    String
+  priceUsd   Float
+  capturedAt DateTime @default(now())
+
+  @@unique([signalId, horizon])
+  @@index([signalId])
 }

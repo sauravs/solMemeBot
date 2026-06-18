@@ -12,8 +12,8 @@
 | 0 | Walking skeleton (Next.js+Prisma+Neon+auth+CI+deploy) | ✅ (deploy pending) | [#1](https://github.com/sauravs/solMemeBot/issues/1) | [#8](https://github.com/sauravs/solMemeBot/pull/8) |
 | 1 | Manage tracked wallets | ✅ | [#2](https://github.com/sauravs/solMemeBot/issues/2) | [#9](https://github.com/sauravs/solMemeBot/pull/9) |
 | 2 | Ingest buys → activity feed | ✅ | [#3](https://github.com/sauravs/solMemeBot/issues/3) | [#11](https://github.com/sauravs/solMemeBot/pull/11) |
-| 3 | Token safety on signals | 🟦 in PR | [#4](https://github.com/sauravs/solMemeBot/issues/4) | — |
-| 4 | Paper-tracking / hypothetical PnL | ⬜ | [#5](https://github.com/sauravs/solMemeBot/issues/5) | — |
+| 3 | Token safety on signals | ✅ | [#4](https://github.com/sauravs/solMemeBot/issues/4) | [#12](https://github.com/sauravs/solMemeBot/pull/12) |
+| 4 | Paper-tracking / hypothetical PnL | 🟦 in PR | [#5](https://github.com/sauravs/solMemeBot/issues/5) | — |
 | 5 | Manual trade journal | ⬜ | [#6](https://github.com/sauravs/solMemeBot/issues/6) | — |
 | 6 | Telegram alerts | ⬜ | [#7](https://github.com/sauravs/solMemeBot/issues/7) | — |
 
@@ -92,5 +92,15 @@ clean, issue → PR → CI green → squash-merged.
   with pass/🚩. Tests: Vitest unit (verdict 5, rugcheck-map 4, fake 3) + Playwright e2e (feed badge
   matches fake contract; token page lists all checks and flags risks). Green locally: unit (27),
   e2e (13), lint, typecheck, build.
-- **Next:** Slice 4 — paper-tracking / hypothetical PnL (#5), first use of the `PriceSource` seam +
-  Vercel Cron. Pausing after Slice 3 this session (resume from this file).
+- **Slice 3 merged** via PR #12.
+- **Slice 4 (in PR):** `PriceSource` seam + Vercel Cron paper-tracking. `PriceSnapshot` aggregate
+  (one per signal+horizon) + migration; `signalPriceUsd` switched Decimal→Float for simpler domain
+  math. Pure modules: `dueHorizons` (which of 1h/24h/7d are due, clock-injected), `pnlPct` +
+  `aggregateWalletPnl` (per-wallet averages). Two PriceSource adapters: deterministic time-varying
+  `fake` (PRICE_PROVIDER=fake) and real `jupiter` (pure `mapJupiterPrice` + graceful fetch). Entry
+  price captured at ingestion; `/api/cron/snapshots` (CRON_SECRET bearer auth; test-only `?now=`
+  override behind `CRON_TIME_OVERRIDE`) records due snapshots idempotently. `/dashboard/performance`
+  shows per-wallet hypothetical PnL at each horizon. `vercel.json` schedules the cron hourly. Tests:
+  Vitest unit (horizons 6, pnl 7, price 5) + Playwright e2e (cron 401; ingest→cron@+25h→table shows
+  PnL matching the fake; cron idempotent). Green locally: unit (45), e2e (15), lint, typecheck, build.
+- **Next:** Slice 5 — manual trade journal (#6). Pausing after Slice 4 (resume from this file).
