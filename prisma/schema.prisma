@@ -18,6 +18,26 @@ model User {
   email          String          @unique
   createdAt      DateTime        @default(now())
   trackedWallets TrackedWallet[]
+  journalEntries JournalEntry[]
+}
+
+/// A real trade the owner manually logged. Its realized PnL is stored net of
+/// fees when the trade is closed (an exit price is given). See CONTEXT.md.
+model JournalEntry {
+  id             String    @id @default(cuid())
+  ownerId        String
+  owner          User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  token          String
+  side           String    @default("buy")
+  quantity       Float
+  entryPriceUsd  Float
+  exitPriceUsd   Float?
+  feesUsd        Float     @default(0)
+  realizedPnlUsd Float?
+  openedAt       DateTime  @default(now())
+  closedAt       DateTime?
+
+  @@index([ownerId, openedAt])
 }
 
 /// A Solana wallet the owner has chosen to follow as candidate "smart money".

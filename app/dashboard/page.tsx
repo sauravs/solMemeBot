@@ -36,6 +36,10 @@ export default async function DashboardPage() {
         <Link href="/dashboard/performance" data-testid="nav-performance">
           Wallet performance →
         </Link>
+        <br />
+        <Link href="/dashboard/journal" data-testid="nav-journal">
+          Trade journal →
+        </Link>
       </div>
 
       <form
