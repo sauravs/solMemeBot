@@ -11,6 +11,13 @@ Read this first. It tells any agent (or human) how to work in this repo without 
 5. `docs/adr/` — decisions already made. **Do not re-litigate** an ADR; if you must, write a new
    superseding ADR with reasons.
 
+## Deployment is deferred — don't block on it
+
+The owner connects **Vercel + Neon** only **after all slices are done**. Local dev (Docker
+Postgres, `docker compose up -d`, port 5433) and CI (Postgres service container) fully exercise
+every slice without a deploy. **Never block a slice or mark it incomplete for lacking a live
+deploy.** It's a single end-of-project release task. Repo is intentionally **public**.
+
 ## Non-negotiable working rules
 
 - **TDD, vertical slices.** One test → one implementation → repeat. Never write all tests then all

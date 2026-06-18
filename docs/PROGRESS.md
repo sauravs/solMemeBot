@@ -33,13 +33,18 @@ clean, issue → PR → CI green → squash-merged.
 ## Open decisions / parking lot
 
 - Price provider for `PriceSource` (Birdeye vs Jupiter price API) — decide at Slice 4.
-- **Deploy needs user action:** connect the GitHub repo to Vercel + provision a Neon production DB
-  and set env vars (`DATABASE_URL`, `AUTH_SECRET`, `APP_USER`, `APP_PASSWORD`, …). Until then, the
-  app runs locally against a Docker Postgres (`docker compose up -d`, port 5433) and CI runs against
-  a Postgres service container. The "deploys to Vercel" acceptance item on Slice 0 is the only part
-  not yet done — everything else (auth, DB read, unit, e2e, lint, build) is green locally.
-- Telegram bot token + chat id needed before Slice 6 can be verified live.
-- Repo is currently **public** — confirm whether it should be made private.
+- **DEPLOYMENT IS INTENTIONALLY DEFERRED (decided 2026-06-18).** The owner will connect Vercel +
+  Neon and set production env vars **once all slices are complete** — not per-slice. This is **not
+  a blocker** for any slice: local dev runs against Docker Postgres (`docker compose up -d`, port
+  5433) and CI runs against a Postgres service container, so auth, DB reads, unit, e2e, lint, and
+  build are all fully exercised without a deployment. **Future agents: do NOT block on Vercel/Neon
+  and do NOT mark a slice incomplete for lacking a live deploy.** The Slice 0 "deploys to Vercel"
+  checkbox is the single deferred item; treat it as a release task for the end. When that time
+  comes: connect the repo to Vercel, provision a Neon prod DB, set `DATABASE_URL`/`DIRECT_URL`,
+  `AUTH_SECRET`, `APP_USER`, `APP_PASSWORD`, `CRON_SECRET`, and provider keys.
+- Telegram bot token + chat id needed before Slice 6 can be verified live (also deferrable —
+  use the fake `Notifier` for tests).
+- Repo is **public** — decided OK by the owner (2026-06-18). No action needed.
 - `auth.ts` imports Prisma and is also used by `middleware.ts`; works today (JWT session, no DB hit
   at the edge), but if middleware ever needs DB-free evaluation, split into an `auth.config.ts`.
 
