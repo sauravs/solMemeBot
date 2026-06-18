@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { ensureSafetyReport } from "@/lib/safety/ensure";
+import { getPriceSource } from "@/lib/price";
 import type { ParsedBuy } from "@/lib/chain-events/parse";
 
 /**
@@ -27,6 +28,13 @@ export async function ingestBuys(buys: ParsedBuy[]): Promise<number> {
     // Assess the token's safety the first time we see it bought.
     await ensureSafetyReport(buy.tokenMint);
 
+    // Capture the entry price at signal time (CONTEXT.md: a Signal records the
+    // token's price when observed). Null-tolerant so ingestion never breaks.
+    const entryPrice = await getPriceSource().getPrice(
+      buy.tokenMint,
+      buy.observedAt.getTime(),
+    );
+
     for (const wallet of wallets) {
       try {
         await prisma.signal.create({
@@ -35,6 +43,7 @@ export async function ingestBuys(buys: ParsedBuy[]): Promise<number> {
             tokenMint: buy.tokenMint,
             txSig: buy.txSig,
             side: "buy",
+            signalPriceUsd: entryPrice,
             observedAt: buy.observedAt,
           },
         });

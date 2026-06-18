@@ -32,6 +32,10 @@ export default async function DashboardPage() {
         <Link href="/dashboard/feed" data-testid="nav-feed">
           Activity feed →
         </Link>
+        <br />
+        <Link href="/dashboard/performance" data-testid="nav-performance">
+          Wallet performance →
+        </Link>
       </div>
 
       <form

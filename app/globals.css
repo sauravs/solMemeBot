@@ -109,3 +109,16 @@ button:hover {
   background: rgba(154, 164, 178, 0.16);
   color: var(--muted);
 }
+
+.pnl-pos {
+  color: #4ade80;
+}
+
+.pnl-neg {
+  color: #ff6b6b;
+}
+
+table th,
+table td {
+  font-variant-numeric: tabular-nums;
+}
